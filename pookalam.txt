@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Realistic Traditional Pookalam</title>
+    <style>
+        body {
+            background-color: #12100e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            background-color: #1c1815;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255, 152, 0, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="pookalam" width="800" height="800"></canvas>
+
+<script>
+const canvas = document.getElementById("pookalam");
+const ctx = canvas.getContext("2d");
+
+const cx = 400;
+const cy = 400;
+
+// Helper to fill textured flower petal rings (simulates real flower crush effect)
+function drawPetalRing(innerR, outerR, colorHex, petalDensity = 1200) {
+    ctx.fillStyle = colorHex;
+    for (let i = 0; i < petalDensity; i++) {
+        let angle = Math.random() * Math.PI * 2;
+        let r = innerR + Math.random() * (outerR - innerR);
+        let x = cx + r * Math.cos(angle);
+        let y = cy + r * Math.sin(angle);
+        
+        ctx.beginPath();
+        ctx.ellipse(x, y, 3, 5, angle, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// Draw realistic layered petal rings (like real Onam flowers)
+function drawScallopedPetalLayer(petals, innerR, outerR, mainColor, shadeColor) {
+    let step = (Math.PI * 2) / petals;
+    for (let i = 0; i < petals; i++) {
+        let angle = i * step;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+
+        // Petal Shadow / Base
+        ctx.beginPath();
+        ctx.moveTo(innerR, 0);
+        ctx.quadraticCurveTo((innerR + outerR) / 2, -30, outerR, 0);
+        ctx.quadraticCurveTo((innerR + outerR) / 2, 30, innerR, 0);
+        ctx.fillStyle = shadeColor;
+        ctx.fill();
+
+        // Main Flower Petal Body
+        ctx.beginPath();
+        ctx.moveTo(innerR + 5, 0);
+        ctx.quadraticCurveTo((innerR + outerR) / 2, -24, outerR - 5, 0);
+        ctx.quadraticCurveTo((innerR + outerR) / 2, 24, innerR + 5, 0);
+        ctx.fillStyle = mainColor;
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+// Traditional Nilavilakku (Brass Lamp) at Center
+function drawNilavilakku() {
+    // Lamp Base
+    ctx.beginPath();
+    ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+    ctx.fillStyle = "#b8860b";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 20, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffd700";
+    ctx.fill();
+
+    // Oil Pool
+    ctx.beginPath();
+    ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+    ctx.fillStyle = "#8b5a2b";
+    ctx.fill();
+
+    // Wick & Flame
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff4500";
+    ctx.fill();
+
+    // Flame Glow Effect
+    let glow = ctx.createRadialGradient(cx, cy, 2, cx, cy, 22);
+    glow.addColorStop(0, "rgba(255, 255, 200, 1)");
+    glow.addColorStop(0.4, "rgba(255, 140, 0, 0.8)");
+    glow.addColorStop(1, "rgba(255, 69, 0, 0)");
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+}
+
+// --- CONSTRUCTING THE REALISTIC POOKALAM ---
+
+// 1. Base Boundary (Green Leaf Foundation - Thazhuthama / Plantain Leaf Edge)
+drawPetalRing(365, 385, "#1b4d3e", 3500);
+
+// 2. Outer Ring: Yellow Marigold (Jamanthi)
+drawPetalRing(330, 365, "#ffbf00", 3000);
+
+// 3. Orange Marigold Layer
+drawPetalRing(295, 330, "#ff5722", 2800);
+
+// 4. White Thumbapoo Layer
+drawPetalRing(270, 295, "#f5f5f5", 2200);
+
+// 5. Red Chethipoo Petal Circle (16 Large Scalloped Petals)
+drawScallopedPetalLayer(16, 180, 270, "#d32f2f", "#8b0000");
+
+// 6. Yellow Inner Ring
+drawPetalRing(150, 180, "#ffeb3b", 2000);
+
+// 7. Violet/Purple Kakkathetti Flower Ring
+drawPetalRing(115, 150, "#6a1b9a", 1800);
+
+// 8. White Thumbapoo Star Layer (8 Petals)
+drawScallopedPetalLayer(8, 60, 115, "#ffffff", "#e0e0e0");
+
+// 9. Inner Orange Flower Core
+drawPetalRing(30, 60, "#ff8c00", 1000);
+
+// 10. Central Brass Lamp (Nilavilakku)
+drawNilavilakku();
+
+</script>
+
+</body>
+</html>
